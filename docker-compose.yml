@@ -21,6 +21,8 @@ x-base-app: &base-app
 services:
   app:
     <<: *base-app
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.app-http.loadbalancer.server.port=3000"
