@@ -14,6 +14,8 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 # Rails app lives here
 WORKDIR /rails
 
+ARG SECRET_KEY_BASE=7bb567035ee5fc3a989b9a3ded496f4b092dd48b5fbbaba541e56294a59df7b44ecbc65507be9a300ca8acbfe3c561d9c3822486cf402cd8442d6e1fc063d4bb
+
 # Install base packages
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
@@ -41,9 +43,15 @@ RUN bundle install && \
 
 # Copy application code
 COPY . .
+RUN set -ex \
+    && rails assets:precompile \
+    && cp -p docker/*.sh ./
+
+ENTRYPOINT ["/usr/bin/dumb-init", "-c", "--"]
+CMD ["./start_app.sh"]
 
 # Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+#RUN bundle exec bootsnap precompile app/ lib/
 
 
 

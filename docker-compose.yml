@@ -1,0 +1,38 @@
+x-log: &log
+  options:
+    max-size: '50m'
+    max-file: '3'
+  driver: json-file
+
+x-base: &base
+  restart: always
+  stop_grace_period: 2s
+  logging: *log
+  networks:
+    - web
+
+x-base-app: &base-app
+  <<: *base
+  image: batraisk14/tutorial:latest
+  user: root
+  environment:
+    - RAILS_ENV=production
+
+services:
+  app:
+    <<: *base-app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.app-http.loadbalancer.server.port=3000"
+
+  db:
+    image: postgres:13
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+
+networks:
+  web:
+    external: true
