@@ -43,7 +43,6 @@ RUN bundle install && \
 COPY . .
 
 RUN set -ex \
-    && rails assets:precompile \
     && cp -p docker/*.sh ./
 
 ENTRYPOINT ["/usr/bin/dumb-init", "-c", "--"]
