@@ -18,25 +18,34 @@ x-base-app: &base-app
   environment:
     - RAILS_ENV=production
 
+x-environment: &environment
+  LANG: "C.UTF-8"
+  POSTGRES_USER: "postgres"
+  POSTGRES_HOST: "db"
+  POSTGRES_DB: "db"
+  POSTGRES_HOST_AUTH_METHOD: "trust"
+  RAILS_SERVE_STATIC_FILES: "true"
+  RAILS_LOG_TO_STDOUT: "true"
+  RAILS_MASTER_KEY: "747e76bc53995c2be24e22b6de07303f"
+  RAILS_ENV: "production"
+
 services:
-  app:
-    <<: *base-app
-    environment:
-      - SECRET_KEY_BASE=7bb567035ee5fc3a989b9a3ded496f4b092dd48b5fbbaba541e56294a59df7b44ecbc65507be9a300ca8acbfe3c561d9c3822486cf402cd8442d6e1fc063d4bb
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.app-http.loadbalancer.server.port=3000"
+#  app:
+#    <<: *base-app
+#    environment:
+#      - SECRET_KEY_BASE=7bb567035ee5fc3a989b9a3ded496f4b092dd48b5fbbaba541e56294a59df7b44ecbc65507be9a300ca8acbfe3c561d9c3822486cf402cd8442d6e1fc063d4bb
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.services.app-http.loadbalancer.server.port=3000"
 
   db:
     image: postgres:17-alpine
     volumes:
-      - ./pg_data:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql@17/data
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      ports:
-        - 5432
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5432:5432
 
 
 networks:

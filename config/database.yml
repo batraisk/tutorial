@@ -86,8 +86,9 @@ production:
   primary: &primary_production
     <<: *default
     database: tutorial_production
-    username: tutorial
+    username: postgres
     password: <%= ENV["TUTORIAL_DATABASE_PASSWORD"] %>
+    host: db
   cache:
     <<: *primary_production
     database: tutorial_production_cache
