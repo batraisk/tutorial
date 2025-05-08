@@ -39,11 +39,13 @@ services:
       - "traefik.http.services.app-http.loadbalancer.server.port=3000"
 
   db:
+    networks:
+      - web
     image: postgres:17-alpine
     volumes:
       - ./pg_data:/var/lib/postgresql@17/data
     environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_HOST_AUTH_METHOD=trusts
     ports:
       - 5432:5432
 
